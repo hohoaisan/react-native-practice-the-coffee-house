@@ -7,7 +7,7 @@ import {
   FlatList,
   Dimensions,
 } from 'react-native';
-import CardItem from '../../../components/CardItem';
+import ItemList from '../../../components/ItemList';
 
 const lists = [
   {
@@ -58,56 +58,17 @@ const lists = [
     ],
   },
 ];
-const space = 10;
-const width = (Dimensions.get('window').width - 15 * 4 + space * 2) / 2;
 const FeaturedMenu = ({navigation}) => {
   return (
-    <View style={styles.container}>
-      {lists.map(({title, items}, index) => (
-        <View key={index} style={{flex: 1}}>
-          <View style={styles.headingContainer}>
-            <View>
-              <Text style={styles.headingText}>{title}</Text>
-            </View>
-          </View>
-          <View style={{flex: 1}}>
-            <FlatList
-              columnWrapperStyle={{
-                justifyContent: 'space-between',
-              }}
-              renderItem={({item}, index) => (
-                <View style={{width: width}}>
-                  <CardItem item={item} />
-                </View>
-              )}
-              contentContainerStyle={{paddingBottom: 10}}
-              data={items}
-              numColumns={2}
-              keyExtractor={(item, index) => `item-id-${index}`}
-              ItemSeparatorComponent={() => (
-                <View style={{width: space, height: space}} />
-              )}
-            />
-          </View>
-        </View>
-      ))}
-    </View>
+    <ScrollView style={styles.container}>
+      <ItemList lists={lists}/>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 15,
-    flex: 1,
-  },
-  headingContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingBottom: 5,
-    marginVertical: 10,
-  },
-  headingText: {
-    fontWeight: 'bold',
-  },
+  }
 });
 export default FeaturedMenu;

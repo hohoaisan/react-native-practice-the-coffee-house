@@ -9,7 +9,7 @@ import BeverageMenu from './BeverageMenu';
 import FoodMenu from './FoodMenu';
 import CartScreen from './CartScreen';
 import SearchScreen from './SearchScreen';
-
+import IconButton from '../../components/electrons/IconButton';
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
 
@@ -30,7 +30,7 @@ const TabScreen = () => {
     {
       component: FoodMenu,
       name: 'FoodMenu',
-      title: 'Thức ăn',
+      title: 'Đồ ăn',
       options: {},
     },
     {
@@ -41,18 +41,27 @@ const TabScreen = () => {
     },
   ]);
   return (
-    <Tab.Navigator>
-      {tabs.map(({component, name, title, options}, index) => (
-        <Tab.Screen
-          key={index}
-          name={name}
-          component={component}
-          options={{
-            headerShown: false,
-            title: title ? title : name,
-            ...options,
-          }}></Tab.Screen>
-      ))}
+    <Tab.Navigator
+      tabBarOptions={{
+        activeTintColor: 'tomato',
+        inactiveTintColor: 'gray',
+        indicatorStyle: {
+          backgroundColor: 'tomato',
+        },
+      }}>
+      <>
+        {tabs.map(({component, name, title, options}, index) => (
+          <Tab.Screen
+            key={index}
+            name={name}
+            component={component}
+            options={{
+              headerShown: false,
+              title: title ? title : name,
+              ...options,
+            }}></Tab.Screen>
+        ))}
+      </>
     </Tab.Navigator>
   );
 };

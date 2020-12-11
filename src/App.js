@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useContext} from 'react';
 import {Text, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -7,7 +7,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {HomeScreen, OrderPlacing, ShopMap, Profile} from './screens';
 
 const Tab = createBottomTabNavigator();
-
 export default function App() {
   const tabScreens = useMemo(() => [
     {

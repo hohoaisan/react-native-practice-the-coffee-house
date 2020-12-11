@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useContext, useEffect} from 'react';
 import {Text, View, StyleSheet, ScrollView} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProfileIdicator from '../../../components/ProfileIndicator';
@@ -109,7 +109,11 @@ const feeds = [
     feeds: [],
   },
 ];
+
 const MainScreen = ({navigation}) => {
+  useEffect(() => {
+    
+  });
   return (
     <View style={styles.container}>
       <View>
