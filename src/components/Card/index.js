@@ -8,9 +8,10 @@ import {
 } from 'react-native';
 import Button from '../electrons/Button';
 const Card = ({item, navigation}) => {
+  const handleCardClick = () =>
+    navigation.navigate('ArticleView', {title: item.title, link: item.link});
   return (
-    <TouchableWithoutFeedback
-      onPress={() => navigation.navigate('ArticleView', {title: item.title})}>
+    <TouchableWithoutFeedback onPress={handleCardClick}>
       <View style={styles.container}>
         <>
           <View style={styles.imageContainer}>
@@ -31,12 +32,7 @@ const Card = ({item, navigation}) => {
             </View>
             <View>
               <View style={styles.cardControls}>
-                <Button
-                  onPress={() =>
-                    navigation.navigate('ArticleView', {title: item.title})
-                  }>
-                  Chi tiết
-                </Button>
+                <Button onPress={handleCardClick}>Chi tiết</Button>
               </View>
             </View>
           </View>

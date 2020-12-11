@@ -26,6 +26,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 100,
     overflow: 'hidden',
+    backgroundColor: 'white',
   },
   touchAbleContainer: {
     paddingHorizontal: 10,
