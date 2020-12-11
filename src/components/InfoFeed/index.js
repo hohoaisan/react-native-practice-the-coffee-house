@@ -3,7 +3,7 @@ import {Text, View, StyleSheet, FlatList} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import IconButton from '../electrons/IconButton';
 import Card from '../Card';
-const InfoFeed = ({title, feeds}) => {
+const InfoFeed = ({title, feeds, navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.headingContainer}>
@@ -16,7 +16,9 @@ const InfoFeed = ({title, feeds}) => {
       </View>
       <View>
         <FlatList
-          renderItem={({item}, index) => <Card item={item} />}
+          renderItem={({item}, index) => (
+            <Card item={item} navigation={navigation} />
+          )}
           data={feeds}
           horizontal={true}
           keyExtractor={(item, index) => `item-id-${index}`}

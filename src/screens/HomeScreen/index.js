@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from '@react-navigation/stack';
 import MainScreen from './MainScreen';
+import ArticleView from './ArticleView';
 
 const Stack = createStackNavigator();
 
@@ -14,6 +15,14 @@ function HomeScreen() {
       name: 'MainScreen',
       title: 'Trang chủ',
       options: {},
+    },
+    {
+      component: ArticleView,
+      name: 'ArticleView',
+      title: 'Tin tức',
+      options: {
+        headerShown: true
+      },
     },
   ]);
   return (

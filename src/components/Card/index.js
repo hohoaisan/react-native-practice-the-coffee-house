@@ -7,32 +7,42 @@ import {
   Image,
 } from 'react-native';
 import Button from '../electrons/Button';
-const Card = ({item}) => {
+const Card = ({item, navigation}) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        <Image source={item.image} style={styles.cardImage}></Image>
+    <TouchableWithoutFeedback
+      onPress={() => navigation.navigate('ArticleView', {title: item.title})}>
+      <View style={styles.container}>
+        <>
+          <View style={styles.imageContainer}>
+            <Image source={{uri: item.image}} style={styles.cardImage}></Image>
+          </View>
+          <View style={styles.contentContainer}>
+            <View style={styles.textContainer}>
+              <View>
+                <Text numberOfLines={2} style={styles.contentTitle}>
+                  {item.title}
+                </Text>
+              </View>
+              <View>
+                <Text numberOfLines={3} style={styles.contentDescription}>
+                  {item.content}
+                </Text>
+              </View>
+            </View>
+            <View>
+              <View style={styles.cardControls}>
+                <Button
+                  onPress={() =>
+                    navigation.navigate('ArticleView', {title: item.title})
+                  }>
+                  Chi tiết
+                </Button>
+              </View>
+            </View>
+          </View>
+        </>
       </View>
-      <View style={styles.contentContainer}>
-        <View style={styles.textContainer}>
-          <View>
-            <Text numberOfLines={2} style={styles.contentTitle}>
-              {item.title}
-            </Text>
-          </View>
-          <View>
-            <Text numberOfLines={3} style={styles.contentDescription}>
-              {item.description}
-            </Text>
-          </View>
-        </View>
-        <View>
-          <View style={styles.cardControls}>
-            <Button>Chi tiết</Button>
-          </View>
-        </View>
-      </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
