@@ -1,67 +1,40 @@
-import * as React from 'react';
+import React, {useMemo} from 'react';
 import {Text, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-function HomeScreen() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Home!</Text>
-    </View>
-  );
-}
 
-function OrderPlacing() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>OrderPlacing!</Text>
-    </View>
-  );
-}
-function ShopMap() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>ShopMap!</Text>
-    </View>
-  );
-}
-function Account() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Account!</Text>
-    </View>
-  );
-}
+import {HomeScreen, OrderPlacing, ShopMap, Profile} from './screens';
 
 const Tab = createBottomTabNavigator();
 
-const tabScreens = [
-  {
-    component: HomeScreen,
-    title: 'Trang chủ',
-    name: 'HomeScreen',
-    icon: 'newspaper-outline',
-  },
-  {
-    component: OrderPlacing,
-    name: 'OrderPlacing',
-    title: 'Đặt hàng',
-    icon: 'cafe-outline',
-  },
-  {
-    component: ShopMap,
-    title: 'Cửa hàng',
-    name: 'ShopMap',
-    icon: 'home-outline',
-  },
-  {
-    component: Account,
-    title: 'Tài khoản',
-    name: 'Account',
-    icon: 'person-outline',
-  },
-];
 export default function App() {
+  const tabScreens = useMemo(() => [
+    {
+      component: HomeScreen,
+      title: 'Tin tức',
+      name: 'HomeScreen',
+      icon: 'newspaper-outline',
+    },
+    {
+      component: OrderPlacing,
+      name: 'OrderPlacing',
+      title: 'Đặt hàng',
+      icon: 'cafe-outline',
+    },
+    {
+      component: ShopMap,
+      title: 'Cửa hàng',
+      name: 'ShopMap',
+      icon: 'home-outline',
+    },
+    {
+      component: Profile,
+      title: 'Tài khoản',
+      name: 'Profile',
+      icon: 'person-outline',
+    },
+  ]);
   return (
     <>
       <NavigationContainer>
