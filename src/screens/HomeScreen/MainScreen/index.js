@@ -11,7 +11,7 @@ const MainScreen = ({navigation}) => {
   useEffect(() => {
     let feedRef = db.collection('feeds');
     let feedcategoryRef = db.collection('feedcategory');
-    let subscribe = feedcategoryRef.onSnapshot(
+    let subscribe = feedcategoryRef.orderBy("order").onSnapshot(
       (querySnapshot) => {
         Promise.all(
           querySnapshot.docs.map(

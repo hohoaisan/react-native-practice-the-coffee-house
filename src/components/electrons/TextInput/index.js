@@ -1,6 +1,12 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TextInput as Input} from 'react-native';
-const TextInput = ({title, children, disabled, onChangeText}) => {
+const TextInput = ({
+  title,
+  children,
+  disabled,
+  onChangeText,
+  secureTextEntry,
+}) => {
   return (
     <View
       style={{
@@ -18,6 +24,7 @@ const TextInput = ({title, children, disabled, onChangeText}) => {
             style={{padding: 0, color: 'black'}}
             value={children}
             editable={!disabled}
+            secureTextEntry={secureTextEntry}
             onChangeText={onChangeText}></Input>
         </View>
       </View>

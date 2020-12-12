@@ -6,7 +6,7 @@ import Button from '../electrons/Button';
 import IconButton from '../electrons/IconButton';
 
 const ProfileIndicatorLarge = ({navigation, profile}) => {
-  const {name, image, loggedIn} = profile;
+  const {user, image, loggedIn} = profile;
   return (
     <View style={styles.container}>
       <View style={styles.horizontalContainer}>
@@ -19,7 +19,15 @@ const ProfileIndicatorLarge = ({navigation, profile}) => {
             )}
           </View>
           <View style={styles.profileTextContainer}>
-              <Text style={styles.profileText}>{loggedIn?name:"Bạn chưa đăng nhập"}</Text>
+            <Text style={styles.profileText}>
+              {loggedIn
+                ? user
+                  ? user.displayName
+                    ? user.displayName
+                    : user.email
+                  : ''
+                : 'Bạn chưa đăng nhập'}
+            </Text>
           </View>
         </View>
       </View>
@@ -30,7 +38,7 @@ const ProfileIndicatorLarge = ({navigation, profile}) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   horizontalContainer: {
     marginHorizontal: 15,
@@ -49,7 +57,7 @@ const styles = StyleSheet.create({
   },
   profileImg: {width: '100%', height: '100%'},
   profileTextContainer: {
-    marginVertical: 10
+    marginVertical: 10,
   },
   profileText: {
     fontWeight: 'bold',

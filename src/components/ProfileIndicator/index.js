@@ -1,17 +1,14 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {Text, View, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import Button from '../electrons/Button';
 import IconButton from '../electrons/IconButton';
-const profile = {
-  name: 'Hoài Sản',
-  image: require('../../assets/images/profile.png'),
-  loggedIn: true,
-};
+import {AuthProvider, AuthContext} from '../../contexts/AuthContext';
 
 const ProfileIndicator = ({navigation}) => {
-  const {name, image, loggedIn} = profile;
+  const {loggedIn, user} = useContext(AuthContext);
+  const image = require('../../assets/images/profile.png');
   return (
     <View style={styles.container}>
       <View style={styles.horizontalContainer}>
@@ -30,7 +27,13 @@ const ProfileIndicator = ({navigation}) => {
             </View>
             <View style={styles.profileTextContainer}>
               {loggedIn ? (
-                <Text style={styles.profileText}>{name}</Text>
+                <Text style={styles.profileText}>
+                  {user
+                    ? user.displayName
+                      ? user.displayName
+                      : user.email
+                    : ''}
+                </Text>
               ) : (
                 <Button onPress={() => console.log('Clicked')}>
                   Đăng nhập
@@ -57,7 +60,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'lightgray',
     borderBottomWidth: 1,
     height: 50,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   horizontalContainer: {
     flex: 1,

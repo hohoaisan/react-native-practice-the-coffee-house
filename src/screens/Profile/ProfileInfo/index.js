@@ -1,4 +1,4 @@
-import React, {useState, useMemo} from 'react';
+import React, {useState, useMemo, useContext} from 'react';
 import {Text, View, StyleSheet, ScrollView} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -7,80 +7,185 @@ import ProfileIndicatorLarge from '../../../components/ProfileIndicatorLarge';
 import Button from '../../../components/electrons/Button';
 import TextInput from '../../../components/electrons/TextInput';
 
+import {AuthProvider, AuthContext} from '../../../contexts/AuthContext';
+
 const profile = {
   name: 'Hoài Sản',
   dob: '25/11/1999',
-  image: require('../../../assets/images/profile.png'),
+
   phone: '0935245367',
-  loggedIn: true,
+};
+const changeObjectState = (state, setState, feild, text) => {
+  let newState = {
+    ...state,
+  };
+  newState[feild] = text;
+  setState(newState);
+};
+const LoginView = ({setRegisterStatus}) => {
+  const {signIn} = useContext(AuthContext);
+  const [logInfo, setLogInfo] = useState({});
+  const feilds = [
+    {
+      name: 'Email',
+      feild: 'email',
+    },
+    {
+      name: 'Mật khẩu',
+      feild: 'password',
+      secureTextEntry: true,
+    },
+  ];
+
+  const handleSubmitLogin = () => {
+    const {email, password} = logInfo;
+    if (email && password) {
+      signIn(email, password);
+      setLogInfo({});
+    } else {
+      console.log('Feild not meet requirement');
+    }
+  };
+  return (
+    <>
+      <View>
+        {feilds.map((item, index) => (
+          <TextInput
+            key={index}
+            title={item.name}
+            secureTextEntry={item.secureTextEntry}
+            onChangeText={(text) =>
+              changeObjectState(logInfo, setLogInfo, item.feild, text)
+            }>
+            {logInfo[item.feild]}
+          </TextInput>
+        ))}
+      </View>
+      <View style={[styles.container, styles.profileControls]}>
+        <Button onPress={handleSubmitLogin}>Đăng nhập</Button>
+        <Button onPress={() => setRegisterStatus(true)}>Đăng kí</Button>
+      </View>
+    </>
+  );
+};
+
+const ViewAndEdit = () => {
+  const {loggedIn, user, signIn, signOut, changeInfo} = useContext(AuthContext);
+  const [editStatus, setEditStatus] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
+  const feilds = [
+    {
+      name: 'Tên',
+      feild: 'name',
+    },
+    {
+      name: 'Email',
+      feild: 'email',
+    },
+    {
+      name: 'Mật khẩu',
+      feild: 'password',
+      secureTextEntry: true,
+    },
+  ];
+
+  const handleSubmitLogout = () => {
+    signOut();
+  };
+  return (
+    <>
+      <View>
+        {feilds.map((item, index) => (
+          <TextInput
+            key={index}
+            title={item.name}
+            disabled={!editStatus}
+            secureTextEntry={item.secureTextEntry}
+            onChangeText={(text) =>
+              changeObjectState(userInfo, setUserInfo, item.feild, text)
+            }>
+            {userInfo[item.feild]}
+          </TextInput>
+        ))}
+      </View>
+      <View style={[styles.container, styles.profileControls]}>
+        {editStatus ? (
+          <>
+            <Button
+              onPress={() => {
+                console.log(userInfo);
+                setEditStatus(false);
+              }}>
+              Lưu thông tin
+            </Button>
+            <Button
+              onPress={() => {
+                setEditStatus(false);
+              }}>
+              Huỷ thay đổi
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button onPress={() => setEditStatus(true)}>Sửa thông tin</Button>
+            <Button onPress={handleSubmitLogout}>Đăng xuất</Button>
+          </>
+        )}
+      </View>
+    </>
+  );
+};
+
+const Register = ({setRegisterStatus}) => {
+  const {loggedIn, user, signIn, signOut, changeInfo} = useContext(AuthContext);
+  const [regInfo, setRegInfo] = useState({});
+  const feilds = [
+    {
+      name: 'Tên',
+      feild: 'name',
+    },
+    {
+      name: 'Email',
+      feild: 'email',
+    },
+    {
+      name: 'Mật khẩu',
+      feild: 'password',
+      secureTextEntry: true,
+    },
+  ];
+  const handleSubmitRegister = () => {};
+  return (
+    <>
+      <View>
+        {feilds.map((item, index) => (
+          <TextInput
+            key={index}
+            title={item.name}
+            secureTextEntry={item.secureTextEntry}
+            onChangeText={(text) =>
+              changeObjectState(regInfo, setRegInfo, item.feild, text)
+            }>
+            {regInfo[item.feild]}
+          </TextInput>
+        ))}
+      </View>
+      <View style={[styles.container, styles.profileControls]}>
+        <Button onPress={() => console.log(regInfo)}>Đăng kí tài khoản</Button>
+        <Button onPress={() => setRegisterStatus(false)}>Đăng nhập</Button>
+      </View>
+    </>
+  );
 };
 const ProfileInfo = () => {
-  const {name, image, dob, phone, loggedIn} = profile;
-  const [regiserStatus, setRegiserStatus] = useState(false);
-  const [editStatus, setEditStatus] = useState(false);
-  const [userInfo, setUserInfo] = useState({name, dob, phone});
-  const [regInfo, setRegInfo] = useState({});
-  const [logInfo, setLogInfo] = useState({});
-  const changeObjectState = (state, setState, feild, text) => {
-    let newState = {
-      ...state,
-    };
-    newState[feild] = text;
-    setState(newState);
-  };
+  const {loggedIn, user, signIn, signOut, changeInfo} = useContext(AuthContext);
+  const [registerStatus, setRegisterStatus] = useState(false);
+  const image = require('../../../assets/images/profile.png');
 
-  const feilds = useMemo(() => ({
-    info: [
-      {
-        name: 'Tên',
-        feild: 'name',
-      },
-      {
-        name: 'Sinh nhật',
-        feild: 'dob',
-      },
-      {
-        name: 'Số điện thoại',
-        feild: 'phone',
-      },
-    ],
-    register: [
-      {
-        name: 'Tên',
-        feild: 'name',
-      },
-      {
-        name: 'Sinh nhật',
-        feild: 'dob',
-      },
-      {
-        name: 'Số điện thoại',
-        feild: 'phone',
-      },
-      {
-        name: 'Email',
-        feild: 'email',
-      },
-      {
-        name: 'Password',
-        feild: 'password',
-      },
-    ],
-    login: [
-      {
-        name: 'Email',
-        feild: 'email',
-      },
-      {
-        name: 'Password',
-        feild: 'password',
-      },
-    ],
-  }));
   return (
     <ScrollView style={{flex: 1}}>
       <View>
-        <ProfileIndicatorLarge profile={profile} />
+        <ProfileIndicatorLarge profile={{user, loggedIn, image}} />
       </View>
       <View>
         <View>
@@ -89,98 +194,21 @@ const ProfileInfo = () => {
               <Text style={styles.infoHeading}>
                 {loggedIn
                   ? 'Thông tin cá nhân'
-                  : regiserStatus
+                  : registerStatus
                   ? 'Đăng kí'
                   : 'Đăng nhập'}
               </Text>
             </View>
           </View>
-          <View>
+          <>
             {loggedIn ? (
-              <>
-                {feilds.info.map((item, index) => (
-                  <TextInput
-                    key={index}
-                    title={item.name}
-                    disabled={!editStatus}
-                    onChangeText={(text) =>
-                      changeObjectState(userInfo, setUserInfo, item.feild, text)
-                    }>
-                    {userInfo[item.feild]}
-                  </TextInput>
-                ))}
-              </>
-            ) : regiserStatus ? (
-              <>
-                {feilds.register.map((item, index) => (
-                  <TextInput
-                    key={index}
-                    title={item.name}
-                    onChangeText={(text) =>
-                      changeObjectState(regInfo, setRegInfo, item.feild, text)
-                    }>
-                    {regInfo[item.feild]}
-                  </TextInput>
-                ))}
-              </>
+              <ViewAndEdit />
+            ) : registerStatus ? (
+              <Register setRegisterStatus={setRegisterStatus} />
             ) : (
-              <>
-                {feilds.login.map((item, index) => (
-                  <TextInput
-                    key={index}
-                    title={item.name}
-                    onChangeText={(text) =>
-                      changeObjectState(logInfo, setLogInfo, item.feild, text)
-                    }>
-                    {logInfo[item.feild]}
-                  </TextInput>
-                ))}
-              </>
+              <LoginView setRegisterStatus={setRegisterStatus} />
             )}
-          </View>
-          <View style={[styles.container, styles.profileControls]}>
-            {loggedIn ? (
-              editStatus ? (
-                <>
-                  <Button
-                    onPress={() => {
-                      console.log(userInfo);
-                      setEditStatus(false);
-                    }}>
-                    Lưu thông tin
-                  </Button>
-                  <Button
-                    onPress={() => {
-                      setUserInfo({name, dob, phone});
-                      setEditStatus(false);
-                    }}>
-                    Huỷ thay đổi
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Button onPress={() => setEditStatus(true)}>
-                    Sửa thông tin
-                  </Button>
-                  <Button>Đăng xuất</Button>
-                </>
-              )
-            ) : regiserStatus ? (
-              <>
-                <Button onPress={() => console.log(regInfo)}>
-                  Đăng kí tài khoản
-                </Button>
-                <Button onPress={() => setRegiserStatus(false)}>
-                  Đăng nhập
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button onPress={() => console.log(logInfo)}>Đăng nhập</Button>
-                <Button onPress={() => setRegiserStatus(true)}>Đăng kí</Button>
-              </>
-            )}
-          </View>
+          </>
         </View>
       </View>
     </ScrollView>

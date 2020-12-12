@@ -6,6 +6,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {HomeScreen, OrderPlacing, ShopMap, Profile} from './screens';
 import {firebase} from './firebase';
+import {AuthProvider, AuthContext} from './contexts/AuthContext';
+
 const Tab = createBottomTabNavigator();
 export default function App() {
   const tabScreens = useMemo(() => [
@@ -35,31 +37,32 @@ export default function App() {
     },
   ]);
 
-  
   return (
     <>
-      <NavigationContainer>
-        <Tab.Navigator
-          initialRouteName="HomeScreen"
-          tabBarOptions={{
-            activeTintColor: 'tomato',
-            inactiveTintColor: 'gray',
-          }}>
-          {tabScreens.map((item, index) => (
-            <Tab.Screen
-              key={index}
-              name={item.name}
-              component={item.component}
-              options={{
-                tabBarLabel: item.title,
-                tabBarIcon: ({color, size}) => (
-                  <Ionicons name={item.icon} size={size} color={color} />
-                ),
-              }}
-            />
-          ))}
-        </Tab.Navigator>
-      </NavigationContainer>
+      <AuthProvider>
+        <NavigationContainer>
+          <Tab.Navigator
+            initialRouteName="HomeScreen"
+            tabBarOptions={{
+              activeTintColor: 'tomato',
+              inactiveTintColor: 'gray',
+            }}>
+            {tabScreens.map((item, index) => (
+              <Tab.Screen
+                key={index}
+                name={item.name}
+                component={item.component}
+                options={{
+                  tabBarLabel: item.title,
+                  tabBarIcon: ({color, size}) => (
+                    <Ionicons name={item.icon} size={size} color={color} />
+                  ),
+                }}
+              />
+            ))}
+          </Tab.Navigator>
+        </NavigationContainer>
+      </AuthProvider>
     </>
   );
 }
