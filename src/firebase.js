@@ -2,6 +2,7 @@ import * as firebase from 'firebase';
 import '@firebase/auth';
 import '@firebase/firestore';
 
+const firebaseConfig = require('../firebase.config');
 // Work around issue `Setting a timer for long time`
 // see: https://github.com/firebase/firebase-js-sdk/issues/97
 
@@ -47,16 +48,7 @@ if (Platform.OS === 'android') {
     _clearTimeout(id);
   };
 }
-const firebaseConfig = {
-  apiKey: 'AIzaSyAj1aVJcX9nsd36t2_Gt2qiUlfqtAfeVDA',
-  authDomain: 'thecoffeehouse-89993.firebaseapp.com',
-  databaseURL: 'https://thecoffeehouse-89993-default-rtdb.firebaseio.com',
-  projectId: 'thecoffeehouse-89993',
-  storageBucket: 'thecoffeehouse-89993.appspot.com',
-  messagingSenderId: '263948478121',
-  appId: '1:263948478121:web:0c2db9db26ac64a215abb8',
-  measurementId: 'G-ZV2PSWQK3V',
-};
+
 if (firebase.apps.length === 0) {
   firebase.initializeApp(firebaseConfig);
   firebase.firestore().settings({experimentalForceLongPolling: true});

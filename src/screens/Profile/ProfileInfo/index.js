@@ -70,9 +70,20 @@ const LoginView = ({setRegisterStatus}) => {
 };
 
 const ViewAndEdit = () => {
-  const {loggedIn, user, signIn, signOut, changeInfo} = useContext(AuthContext);
+  const {
+    loggedIn,
+    user,
+    signIn,
+    signOut,
+    changeInfo,
+    updateEmail,
+    sendResetPassword,
+  } = useContext(AuthContext);
   const [editStatus, setEditStatus] = useState(false);
-  const [userInfo, setUserInfo] = useState({});
+  const [userInfo, setUserInfo] = useState({
+    name: user.displayName,
+    email: user.email,
+  });
   const feilds = [
     {
       name: 'Tên',
@@ -82,15 +93,24 @@ const ViewAndEdit = () => {
       name: 'Email',
       feild: 'email',
     },
-    {
-      name: 'Mật khẩu',
-      feild: 'password',
-      secureTextEntry: true,
-    },
   ];
 
   const handleSubmitLogout = () => {
     signOut();
+  };
+
+  const handleSubmitEdit = () => {
+    let prev = {
+      name: user.displayName,
+      email: user.email,
+    };
+    if (!!userInfo.name && prev.name !== userInfo.name) {
+      changeInfo(userInfo.name);
+    }
+    if (!!userInfo.email && prev.email !== userInfo.email) {
+      updateEmail(userInfo.email);
+    }
+    setEditStatus(false);
   };
   return (
     <>
@@ -111,33 +131,44 @@ const ViewAndEdit = () => {
       <View style={[styles.container, styles.profileControls]}>
         {editStatus ? (
           <>
-            <Button
-              onPress={() => {
-                console.log(userInfo);
-                setEditStatus(false);
-              }}>
-              Lưu thông tin
-            </Button>
-            <Button
-              onPress={() => {
-                setEditStatus(false);
-              }}>
-              Huỷ thay đổi
-            </Button>
+            <View>
+              <Button onPress={handleSubmitEdit}>Lưu thông tin</Button>
+            </View>
+            <View>
+              <Button
+                onPress={() => {
+                  setUserInfo({
+                    name: user.displayName,
+                    email: user.email,
+                  });
+                  setEditStatus(false);
+                }}>
+                Huỷ thay đổi
+              </Button>
+            </View>
           </>
         ) : (
           <>
-            <Button onPress={() => setEditStatus(true)}>Sửa thông tin</Button>
-            <Button onPress={handleSubmitLogout}>Đăng xuất</Button>
+            <View>
+              <Button onPress={() => setEditStatus(true)}>Sửa thông tin</Button>
+            </View>
+            <View>
+              <Button onPress={handleSubmitLogout}>Đăng xuất</Button>
+            </View>
           </>
         )}
+      </View>
+      <View style={[styles.container, styles.profileControls]}>
+        <Button onPress={sendResetPassword}>Yêu cầu đặt lại mật khẩu</Button>
       </View>
     </>
   );
 };
 
 const Register = ({setRegisterStatus}) => {
-  const {loggedIn, user, signIn, signOut, changeInfo} = useContext(AuthContext);
+  const {loggedIn, user, signIn, signOut, changeInfo, register} = useContext(
+    AuthContext,
+  );
   const [regInfo, setRegInfo] = useState({});
   const feilds = [
     {
@@ -154,7 +185,14 @@ const Register = ({setRegisterStatus}) => {
       secureTextEntry: true,
     },
   ];
-  const handleSubmitRegister = () => {};
+  const handleSubmitRegister = () => {
+    const {name, email, password} = regInfo;
+    if (!!name && !!email && !!password) {
+      register(name, email, password);
+    } else {
+      console.log('Feild not meet requirement');
+    }
+  };
   return (
     <>
       <View>
@@ -171,7 +209,7 @@ const Register = ({setRegisterStatus}) => {
         ))}
       </View>
       <View style={[styles.container, styles.profileControls]}>
-        <Button onPress={() => console.log(regInfo)}>Đăng kí tài khoản</Button>
+        <Button onPress={handleSubmitRegister}>Đăng kí tài khoản</Button>
         <Button onPress={() => setRegisterStatus(false)}>Đăng nhập</Button>
       </View>
     </>

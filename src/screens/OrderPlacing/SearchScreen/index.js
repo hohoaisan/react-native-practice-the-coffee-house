@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,45 +10,31 @@ import {
 import ItemList from '../../../components/ItemList';
 import SearchInput from '../../../components/SearchInput';
 import ListPlaceholder from '../../../components/ListPlaceholder';
-
-
-const lists = [
-  // {
-  //   title: 'Kết quả tìm kiếm',
-  //   items: [
-  //     {
-  //       id: '123',
-  //       image:
-  //         'https://feed.thecoffeehouse.com/content/images/2020/12/0-02-06-d0dfdca6f4839c9a59b9f2e6fa0a89a03acb63238a5a5566ceeb696de4c29271_1c6da08aed8a3f.jpg',
-  //       title: 'Cà phê lúa mạch đá rất ngon',
-  //       price: 69000,
-  //     },
-  //     {
-  //       id: '123',
-  //       image:
-  //         'https://feed.thecoffeehouse.com/content/images/2020/12/0-02-06-d0dfdca6f4839c9a59b9f2e6fa0a89a03acb63238a5a5566ceeb696de4c29271_1c6da08aed8a3f.jpg',
-  //       title: 'Cà phê lúa mạch đá rất ngon',
-  //       price: 69000,
-  //     },
-  //     {
-  //       id: '123',
-  //       image:
-  //         'https://feed.thecoffeehouse.com/content/images/2020/12/0-02-06-d0dfdca6f4839c9a59b9f2e6fa0a89a03acb63238a5a5566ceeb696de4c29271_1c6da08aed8a3f.jpg',
-  //       title: 'Cà phê lúa mạch đá rất ngon',
-  //       price: 69000,
-  //     },
-  //   ],
-  // },
-];
+import {firebase} from '../../../firebase';
+const db = firebase.firestore();
 const SearchScreen = ({navigation}) => {
   const [searchText, setSearchText] = useState('');
+  const [lists, setLists] = useState([]);
+
+  const handleSearch = () => {
+    let a = db.collection('products')
+      .where('name', '>=', searchText)
+      .where('name', '<=', searchText + '\uf8ff')
+      .get()
+      .then((querySnapshot) =>
+        querySnapshot.forEach(function (doc) {
+          console.log(doc.id, ' => ', doc.data());
+        }),
+      );
+  };
+  useEffect(() => {});
   return (
     <>
       <View style={styles.container}>
         <View style={styles.searchContainer}>
           <SearchInput
             onChangeText={(text) => setSearchText(text)}
-            onSubmit={() => console.log(searchText)}>
+            onSubmit={handleSearch}>
             {searchText}
           </SearchInput>
         </View>

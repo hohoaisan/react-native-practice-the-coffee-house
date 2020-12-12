@@ -33,11 +33,18 @@ const TabScreen = () => {
       title: 'Đồ ăn',
       options: {},
     },
+    // {
+    //   component: SearchScreen,
+    //   name: 'SearchScreen',
+    //   title: 'Tìm kiếm',
+    //   options: {},
+    // },
     {
-      component: SearchScreen,
-      name: 'SearchScreen',
-      title: 'Tìm kiếm',
-      options: {},
+      component: CartScreen,
+      name: 'CartScreen',
+      title: 'Giỏ hàng',
+      options: {
+      },
     },
   ]);
   return (
@@ -70,12 +77,6 @@ const OrderPlacing = () => {
     {
       component: TabScreen,
       name: 'TabScreen',
-      options: {},
-    },
-    {
-      component: CartScreen,
-      name: 'CartScreen',
-      title: 'Giỏ hàng',
       options: {},
     },
   ]);

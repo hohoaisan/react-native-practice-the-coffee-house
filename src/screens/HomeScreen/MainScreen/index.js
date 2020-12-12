@@ -11,7 +11,7 @@ const MainScreen = ({navigation}) => {
   useEffect(() => {
     let feedRef = db.collection('feeds');
     let feedcategoryRef = db.collection('feedcategory');
-    let subscribe = feedcategoryRef.orderBy("order").onSnapshot(
+    let subscribe = feedcategoryRef.orderBy('order').onSnapshot(
       (querySnapshot) => {
         Promise.all(
           querySnapshot.docs.map(
@@ -44,7 +44,7 @@ const MainScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <View>
-        <ProfileIdicator />
+        <ProfileIdicator navigation={navigation} />
       </View>
       <ScrollView>
         <View style={styles.feedContainer}>

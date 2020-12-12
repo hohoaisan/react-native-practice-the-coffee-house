@@ -37,10 +37,50 @@ const AuthProvider = ({navigation, children, ...rest}) => {
       });
   };
   const changeInfo = (displayName, photoURL) => {
-    firebase.auth().currentUser.updateProfile({
-      displayName,
-      photoURL,
-    });
+    firebase
+      .auth()
+      .currentUser.updateProfile({
+        displayName,
+        photoURL,
+      })
+      .then(() => console.log('changed'));
+  };
+  const updateEmail = (email) => {
+    firebase
+      .auth()
+      .currentUser.updateEmail(email)
+      .then(function () {
+        console.log('updated');
+      })
+      .catch(function (error) {});
+  };
+  const register = (displayName, email, password) => {
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((user) => {
+        console.log('registered');
+        changeInfo(displayName);
+        signOut();
+        signIn(email, password);
+      })
+      .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // ..
+      });
+  };
+  const sendResetPassword = () => {
+    var auth = firebase.auth();
+    var emailAddress = firebase.auth().currentUser.email;
+    auth
+      .sendPasswordResetEmail(emailAddress)
+      .then(function () {
+        console.log('send');
+      })
+      .catch(function (error) {
+        // An error happened.
+      });
   };
   function onAuthStateChanged(user) {
     setAuth((prevState) => ({user: user, loggedIn: !!user}));
@@ -50,7 +90,16 @@ const AuthProvider = ({navigation, children, ...rest}) => {
     return subscriber; // unsubscribe on unmount
   }, []);
   return (
-    <AuthContext.Provider value={{...auth, signIn, signOut, changeInfo}}>
+    <AuthContext.Provider
+      value={{
+        ...auth,
+        signIn,
+        signOut,
+        changeInfo,
+        register,
+        updateEmail,
+        sendResetPassword,
+      }}>
       {children}
     </AuthContext.Provider>
   );

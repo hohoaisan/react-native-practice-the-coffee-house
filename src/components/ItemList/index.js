@@ -29,7 +29,11 @@ const ItemList = ({lists}) => {
             }}>
             {items.map((item, index) => (
               <View style={{width: width, marginBottom: space}} key={index}>
-                <CardItem key={index} item={item} />
+                <CardItem
+                  key={index}
+                  item={item}
+                  onPress={() => console.log(item.id)}
+                />
               </View>
             ))}
           </View>

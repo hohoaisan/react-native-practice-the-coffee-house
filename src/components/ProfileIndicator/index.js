@@ -15,7 +15,9 @@ const ProfileIndicator = ({navigation}) => {
         <TouchableOpacity
           disabled={!loggedIn}
           onPress={
-            loggedIn ? () => console.log('navigate to profile') : undefined
+            loggedIn
+              ? () => navigation.navigate('Profile', {screen: 'ProfileInfo'})
+              : undefined
           }>
           <View style={styles.profileContainer}>
             <View style={styles.profileImgContainer}>
