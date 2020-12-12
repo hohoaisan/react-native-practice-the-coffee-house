@@ -1,85 +1,78 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 import MapView, {PROVIDER_GOOGLE, Marker} from 'react-native-maps';
 import IconButton from '../../../components/electrons/IconButton';
 import CardSmall from '../../../components/CardSmall';
-const markers = [
-  {
-    title: 'The Coffee House Ba Tháng 2',
-    address: '82 Đường 3 Tháng 2, Thuận Phước, Hải Châu, Đà Nẵng',
-    image:
-      'https://feed.thecoffeehouse.com/content/images/2020/12/0-02-06-d0dfdca6f4839c9a59b9f2e6fa0a89a03acb63238a5a5566ceeb696de4c29271_1c6da08aed8a3f.jpg',
-    coordinates: {
-      latitude: 16.0856377,
-      longitude: 108.2195351,
-    },
-  },
-  {
-    title: 'The Coffee House Nguyễn Chí Thanh',
-    coordinates: {
-      latitude: 16.0727822,
-      longitude: 108.2208842,
-    },
-    image:
-      'https://feed.thecoffeehouse.com/content/images/2020/12/0-02-06-d0dfdca6f4839c9a59b9f2e6fa0a89a03acb63238a5a5566ceeb696de4c29271_1c6da08aed8a3f.jpg',
-    address:
-      '80A Nguyễn Chí Thanh, Hải Châu 1, Hải Châu, Đà Nẵng 550000, Vietnam',
-  },
-  {
-    title: 'The Coffee House',
-    coordinates: {
-      latitude: 16.0697261,
-      longitude: 108.2173665,
-    },
-    image:
-      'https://feed.thecoffeehouse.com/content/images/2020/12/0-02-06-d0dfdca6f4839c9a59b9f2e6fa0a89a03acb63238a5a5566ceeb696de4c29271_1c6da08aed8a3f.jpg',
-    address: '80 Pasteur, Hải Châu 1, Hải Châu, Đà Nẵng',
-  },
-];
+import {firebase} from '../../../firebase';
+
+const db = firebase.firestore();
+
 const MapScreen = ({navigation}) => {
+  const map = useRef(null);
   const [region, setRegion] = useState({
     latitude: 16.0697261,
     longitude: 108.2173665,
     latitudeDelta: 0.015,
     longitudeDelta: 0.0121,
   });
-  let ref = null;
-
+  const [markers, setMarkers] = useState([]);
+  useEffect(() => {
+    return db.collection('shops').onSnapshot((querySnapShot) => {
+      const marker = querySnapShot.docs.map((doc) => ({
+        ...doc.data(),
+        coordinate: {
+          latitude: doc.data().coordinate.latitude,
+          longitude: doc.data().coordinate.longitude,
+        },
+      }));
+      setMarkers(marker);
+    });
+  }, []);
   return (
     <View style={styles.container}>
       <MapView
-        ref={(map) => (ref = map)}
-        provider={PROVIDER_GOOGLE} // remove if not using Google Maps
+        ref={map}
+        provider={PROVIDER_GOOGLE}
         style={styles.map}
         region={region}>
-        {markers.map((marker, index) => (
-          <Marker
-            key={index}
-            coordinate={marker.coordinates}
-            title={marker.title}
-            description={marker.address}>
-            <IconButton
-              iconname="cafe-outline"
-              size={20}
-              style={{backgroundColor: 'white'}}></IconButton>
-          </Marker>
-        ))}
+        {markers.length
+          ? markers.map(({title, address, coordinate}, index) => {
+              return (
+                <Marker
+                  key={index}
+                  onPress={(event) => console.log(event)}
+                  coordinate={{
+                    longitude: coordinate.longitude ? coordinate.longitude : 0,
+                    latitude: coordinate.latitude ? coordinate.latitude : 0,
+                  }}
+                  title={title}
+                  description={address}>
+                  <IconButton
+                    iconname="cafe-outline"
+                    size={20}
+                    style={{backgroundColor: 'white'}}></IconButton>
+                </Marker>
+              );
+            })
+          : null}
       </MapView>
       <View style={styles.listContainer}>
-        <FlatList
-          renderItem={({item}, index) => (
-            <CardSmall
-              item={item}
-              key={index}
-              onPress={() =>
-                ref.animateToRegion({...region, ...item.coordinates})
-              }></CardSmall>
-          )}
-          data={markers}
-          horizontal={true}
-          keyExtractor={(item, index) => `item-id-${index}`}
-          ItemSeparatorComponent={() => <View style={{width: 10}} />}
-        />
+        {markers.length ? (
+          <FlatList
+            renderItem={({item}, index) => (
+              <CardSmall
+                item={item}
+                key={index}
+                onPress={() =>
+                  map.current.animateToRegion({...region, ...item.coordinate})
+                }></CardSmall>
+            )}
+            data={markers}
+            horizontal={true}
+            keyExtractor={(item, index) => `item-id-${index}`}
+            ItemSeparatorComponent={() => <View style={{width: 10}} />}
+          />
+        ) : null}
       </View>
     </View>
   );
