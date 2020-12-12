@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,10 @@ import CardItem from '../CardItem';
 const space = 10;
 const width = (Dimensions.get('window').width - 15 * 4 + space * 2) / 2;
 
+import {CartProvider, CartContext} from '../../contexts/CartContext';
+
 const ItemList = ({lists}) => {
+  let {addItemToCart} = useContext(CartContext);
   return (
     <View>
       {lists.map(({title, items}, index) => (
@@ -32,7 +35,7 @@ const ItemList = ({lists}) => {
                 <CardItem
                   key={index}
                   item={item}
-                  onPress={() => console.log(item.id)}
+                  onPress={() => addItemToCart(item)}
                 />
               </View>
             ))}

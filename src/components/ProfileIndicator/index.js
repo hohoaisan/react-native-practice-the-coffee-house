@@ -37,7 +37,10 @@ const ProfileIndicator = ({navigation}) => {
                     : ''}
                 </Text>
               ) : (
-                <Button onPress={() => console.log('Clicked')}>
+                <Button
+                  onPress={() =>
+                    navigation.navigate('Profile', {screen: 'ProfileInfo'})
+                  }>
                   Đăng nhập
                 </Button>
               )}

@@ -10,6 +10,9 @@ import FoodMenu from './FoodMenu';
 import CartScreen from './CartScreen';
 import SearchScreen from './SearchScreen';
 import IconButton from '../../components/electrons/IconButton';
+
+import {CartProvider, CartContext} from '../../contexts/CartContext';
+
 const Stack = createStackNavigator();
 const Tab = createMaterialTopTabNavigator();
 
@@ -33,18 +36,11 @@ const TabScreen = () => {
       title: 'Đồ ăn',
       options: {},
     },
-    // {
-    //   component: SearchScreen,
-    //   name: 'SearchScreen',
-    //   title: 'Tìm kiếm',
-    //   options: {},
-    // },
     {
       component: CartScreen,
       name: 'CartScreen',
       title: 'Giỏ hàng',
-      options: {
-      },
+      options: {},
     },
   ]);
   return (
@@ -81,19 +77,21 @@ const OrderPlacing = () => {
     },
   ]);
   return (
-    <Stack.Navigator>
-      {screens.map(({component, name, title, options}, index) => (
-        <Stack.Screen
-          key={index}
-          name={name}
-          component={component}
-          options={{
-            headerShown: false,
-            title: title ? title : name,
-            ...options,
-          }}></Stack.Screen>
-      ))}
-    </Stack.Navigator>
+    <CartProvider>
+      <Stack.Navigator>
+        {screens.map(({component, name, title, options}, index) => (
+          <Stack.Screen
+            key={index}
+            name={name}
+            component={component}
+            options={{
+              headerShown: false,
+              title: title ? title : name,
+              ...options,
+            }}></Stack.Screen>
+        ))}
+      </Stack.Navigator>
+    </CartProvider>
   );
 };
 

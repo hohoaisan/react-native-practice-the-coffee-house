@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,34 @@ import {
   TouchableNativeFeedback,
 } from 'react-native';
 import CartItem from '../../../components/CartItem';
+
+import {CartProvider, CartContext} from '../../../contexts/CartContext';
 const CartScreen = () => {
+  let {cart} = useContext(CartContext);
+  const [cartInfo, setCartInfo] = useState({
+    total: 0,
+    items: [],
+  });
+  useEffect(() => {
+    let list = [];
+    let total = 0;
+    for (let key in cart) {
+      total += cart[key].price;
+      list.push(
+        <CartItem
+          key={key}
+          title={cart[key].title}
+          price={cart[key].price}
+          quantity={cart[key].count}
+        />,
+      );
+    }
+    setCartInfo({
+      total,
+      items: list,
+    });
+  }, [cart]);
+  console.log("cart render");
   return (
     <>
       <ScrollView>
@@ -17,13 +44,7 @@ const CartScreen = () => {
           </View>
         </View>
         <View>
-          <View>
-            <CartItem />
-            <CartItem />
-            <CartItem />
-            <CartItem />
-            <CartItem />
-          </View>
+          <View>{cartInfo.items}</View>
         </View>
       </ScrollView>
       <View style={styles.vericalMargin}>
@@ -34,7 +55,7 @@ const CartScreen = () => {
                 <Text style={styles.totalTitle}>Tổng cộng</Text>
               </View>
               <View>
-                <Text style={styles.totalValue}>207000đ</Text>
+                <Text style={styles.totalValue}>{`${cartInfo.total} đ`}</Text>
               </View>
             </View>
           </View>
@@ -76,7 +97,7 @@ const styles = StyleSheet.create({
   totalTitle: {fontWeight: 'bold'},
   totalValue: {fontWeight: 'bold', fontSize: 20},
   vericalMargin: {
-    marginVertical: 5
-  }
+    marginVertical: 5,
+  },
 });
 export default CartScreen;
