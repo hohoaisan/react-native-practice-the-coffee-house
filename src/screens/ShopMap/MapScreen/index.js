@@ -6,6 +6,9 @@ import CardSmall from '../../../components/CardSmall';
 import {firebase} from '../../../firebase';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+
+let listRef = React.createRef();
+
 const db = firebase.firestore();
 const MapScreen = ({navigation}) => {
   const map = useRef(null);
@@ -40,6 +43,9 @@ const MapScreen = ({navigation}) => {
       ...payloads.coordinate,
     });
     getLocationsOfSeletedRegion(value);
+  };
+  const scrollListToIndex = (index) => {
+    listRef.current.scrollToIndex({index});
   };
   useEffect(() => {
     db.collection('regions')
@@ -78,13 +84,14 @@ const MapScreen = ({navigation}) => {
               return (
                 <Marker
                   key={index}
-                  // onPress={(event) => console.log(event)}
+                  onPress={(event) => scrollListToIndex(index)}
                   coordinate={{
                     longitude: coordinate.longitude ? coordinate.longitude : 0,
                     latitude: coordinate.latitude ? coordinate.latitude : 0,
                   }}
-                  title={title}
-                  description={address}>
+                  // title={title}
+                  // description={address}
+                  >
                   <IconButton
                     iconname="cafe-outline"
                     size={20}
@@ -113,6 +120,7 @@ const MapScreen = ({navigation}) => {
       <View style={styles.listContainer}>
         {markers.length ? (
           <FlatList
+            ref={listRef}
             renderItem={({item}, index) => (
               <CardSmall
                 item={item}
