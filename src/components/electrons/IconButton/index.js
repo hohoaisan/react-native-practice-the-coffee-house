@@ -8,15 +8,17 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const IconButton = ({iconname, size, onPress, style, color}) => {
+const IconButton = ({iconname, size, onPress, style, color, padding}) => {
   const styles = StyleSheet.create({
     buttonContainer: {
       borderRadius: size,
+      width: size + padding,
+      height: size + padding,
       overflow: 'hidden',
     },
     touchAbleContainer: {
-      width: size + 5,
-      height: size + 5,
+      width: size + padding,
+      height: size + padding,
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -28,7 +30,7 @@ const IconButton = ({iconname, size, onPress, style, color}) => {
   return (
     <View style={[styles.buttonContainer, style]}>
       <TouchableNativeFeedback onPress={onPress}>
-        <View style={styles.touchAbleContainer}>
+        <View style={[styles.touchAbleContainer]}>
           <Ionicons name={iconname} size={size} color={color}></Ionicons>
         </View>
       </TouchableNativeFeedback>
@@ -37,6 +39,7 @@ const IconButton = ({iconname, size, onPress, style, color}) => {
 };
 IconButton.defaultProps = {
   size: 20,
+  padding: 5,
 };
 
 export default IconButton;
