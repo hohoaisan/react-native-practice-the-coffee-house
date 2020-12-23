@@ -89,9 +89,7 @@ const MapScreen = ({navigation}) => {
                     longitude: coordinate.longitude ? coordinate.longitude : 0,
                     latitude: coordinate.latitude ? coordinate.latitude : 0,
                   }}
-                  // title={title}
-                  // description={address}
-                  >
+                >
                   <IconButton
                     iconname="cafe-outline"
                     size={20}
@@ -108,33 +106,42 @@ const MapScreen = ({navigation}) => {
             defaultValue={defaultDropdownValue}
             placeholder="Chọn khu vực"
             containerStyle={{height: 40}}
-            style={{backgroundColor: '#fafafa'}}
             itemStyle={{
               justifyContent: 'flex-start',
             }}
-            dropDownStyle={{backgroundColor: '#fafafa'}}
             onChangeItem={hanldeRegionChange}
           />
         </View>
       </View>
       <View style={styles.listContainer}>
-        {markers.length ? (
-          <FlatList
-            ref={listRef}
-            renderItem={({item}, index) => (
-              <CardSmall
-                item={item}
-                key={index}
-                onPress={() =>
-                  map.current.animateToRegion({...region, ...item.coordinate})
-                }></CardSmall>
-            )}
-            data={markers}
-            horizontal={true}
-            keyExtractor={(item, index) => `item-id-${index}`}
-            ItemSeparatorComponent={() => <View style={{width: 10}} />}
-          />
-        ) : null}
+        <View style={{marginBottom: 10}}>
+          <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+            <IconButton
+              iconname="location-outline"
+              size={25}
+              padding={20}
+              style={styles.locationPointer}></IconButton>
+          </View>
+        </View>
+        <View>
+          {markers.length ? (
+            <FlatList
+              ref={listRef}
+              renderItem={({item}, index) => (
+                <CardSmall
+                  item={item}
+                  key={index}
+                  onPress={() =>
+                    map.current.animateToRegion({...region, ...item.coordinate})
+                  }></CardSmall>
+              )}
+              data={markers}
+              horizontal={true}
+              keyExtractor={(item, index) => `item-id-${index}`}
+              ItemSeparatorComponent={() => <View style={{width: 10}} />}
+            />
+          ) : null}
+        </View>
       </View>
     </View>
   );
@@ -165,6 +172,18 @@ const styles = StyleSheet.create({
     left: 0,
     width: '100%',
     padding: 10,
+  },
+  locationPointer: {
+    backgroundColor: 'white',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
   },
 });
 export default MapScreen;
