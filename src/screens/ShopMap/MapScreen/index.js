@@ -47,7 +47,6 @@ const MapScreen = ({navigation}) => {
     });
     getLocationsOfSeletedRegion(value, (markers) => setMarkers(markers));
   };
-
   const scrollListToIndex = (index) => {
     listRef.current.scrollToIndex({index});
   };
@@ -65,7 +64,7 @@ const MapScreen = ({navigation}) => {
       ...options,
     });
   };
-  const moveToUserLocation = async ({animated}) => {
+  const moveToUserLocation = async ({animated, moveRegion}) => {
     try {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
@@ -78,6 +77,11 @@ const MapScreen = ({navigation}) => {
         Geolocation.getCurrentPosition(
           ({coords}) => {
             const {latitude, longitude} = coords;
+            if (moveRegion) {
+              getNearestRegion({latitude, longitude}, (nearestRegion) => {
+                setDefaultDropdownValue(nearestRegion.value);
+              });
+            }
             if (animated) {
               animateToRegion({...region, latitude, longitude});
             } else {
@@ -159,18 +163,38 @@ const MapScreen = ({navigation}) => {
         }
       });
   };
-  
+  const getNearestRegion = ({latitude, longitude}, callback) => {
+    const calcDistance = (region, {latitude, longitude}) => {
+      return Math.sqrt(
+        Math.pow(latitude - region.latitude, 2) +
+          Math.pow(longitude - region.longitude, 2),
+      );
+    };
+    if (regions.length) {
+      const nearestRegion = regions.reduce((nextRegion, currentRegion) => {
+        return calcDistance(currentRegion.payloads.coordinate, {
+          latitude,
+          longitude,
+        }) >=
+          calcDistance(nextRegion.payloads.coordinate, {latitude, longitude})
+          ? nextRegion
+          : currentRegion;
+      });
+      if (typeof callback === 'function') {
+        callback(nearestRegion);
+      }
+    }
+  };
   useEffect(() => {
     getRegions((regions) => {
-      console.log(regions);
       setRegions(regions);
-      // if (regions.length) {
-      //   setDefaultDropdownValue(regions[0].value);
-      //   handleRegionSelectionChange(regions[0]);
-      // }
     });
   }, []);
-  console.log('map render');
+
+  useEffect(() => {
+    moveToUserLocation({animated: false, moveRegion: true});
+  }, [regions]);
+
   return (
     <View style={styles.container}>
       <MapView
@@ -178,7 +202,6 @@ const MapScreen = ({navigation}) => {
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         region={region}
-        onMapReady={() => moveToUserLocation({animated: false})}
         showsUserLocation={true}>
         {markers.length
           ? markers.map(({title, address, coordinate}, index) => {
